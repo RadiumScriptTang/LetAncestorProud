@@ -2,6 +2,9 @@ package com.example.radiumscripttang.software_engineer;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.media.AudioAttributes;
+import android.media.SoundPool;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,10 +16,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
 import parsii.eval.Parser;
 
@@ -44,6 +52,22 @@ public class MainActivity extends AppCompatActivity {
     Button btn_right; // )
     Button btn_sin, btn_cos, btn_tan, btn_cot, btn_lg, btn_ln, btn_pow, btn_square, btn_cube, btn_pi, btn_euler, btn_sqrt;
     Button btn_arc;
+    Button btn_piano;
+    ImageButton btn_cal;
+    LinearLayout linear_cal, linear_piano;
+    ImageButton btn_re_minus, btn_mi_minus, btn_fa_minus, btn_so_minus, btn_la_minus, btn_si_minus,
+        btn_do,btn_re,btn_mi,btn_fa,btn_so,btn_la,btn_si,btn_do_plus,btn_re_plus,btn_mi_plus,btn_fa_plus,btn_so_plus,btn_la_plus,btn_si_plus,
+        btn_do_plus_plus;
+
+    AudioAttributes audioAttributes = new AudioAttributes.Builder()
+            .setUsage(AudioAttributes.USAGE_MEDIA)
+            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+            .build();
+    SoundPool soundPool = new SoundPool.Builder()
+            .setAudioAttributes(audioAttributes)
+            .setMaxStreams(35)
+            .build();
+    HashMap <Integer, Integer> soundMap = new HashMap<>();
 
     private TextView e_input, e_output;
     private StringBuilder formula = new StringBuilder();
@@ -51,7 +75,8 @@ public class MainActivity extends AppCompatActivity {
     private int leftNumber = 0; //左括号-右括号数量
     private String result = "";
     private boolean isArc = false;
-    private boolean isLastEqual; // 判断最近按下的是
+    private boolean isLastEqual; // 判断最近按下的是否为等号
+    private boolean isPiano; // 当前是否为钢琴模式
     //随着用户的输入进行动态计算
     private void dynamicCalculate(){
         StringBuilder tempFormula = new StringBuilder();
@@ -66,6 +91,44 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception ex){
 
         }
+    }
+    private void loadMusci(){
+        soundMap.put(0,soundPool.load(this,R.raw.a2, 1));
+        soundMap.put(1,soundPool.load(this,R.raw.a3, 1));
+        soundMap.put(2,soundPool.load(this,R.raw.a4, 1));
+        soundMap.put(3,soundPool.load(this,R.raw.a5, 1));
+        soundMap.put(4,soundPool.load(this,R.raw.a6, 1));
+        soundMap.put(5,soundPool.load(this,R.raw.a7, 1));
+        soundMap.put(6,soundPool.load(this,R.raw.b1, 1));
+        soundMap.put(7,soundPool.load(this,R.raw.b2, 1));
+        soundMap.put(8,soundPool.load(this,R.raw.b3, 1));
+        soundMap.put(9,soundPool.load(this,R.raw.b4, 1));
+        soundMap.put(10,soundPool.load(this,R.raw.b5, 1));
+        soundMap.put(11,soundPool.load(this,R.raw.b6, 1));
+        soundMap.put(12,soundPool.load(this,R.raw.b7, 1));
+        soundMap.put(13,soundPool.load(this,R.raw.c1, 1));
+        soundMap.put(14,soundPool.load(this,R.raw.c2, 1));
+        soundMap.put(15,soundPool.load(this,R.raw.c3, 1));
+        soundMap.put(16,soundPool.load(this,R.raw.c4, 1));
+        soundMap.put(17,soundPool.load(this,R.raw.c5, 1));
+        soundMap.put(18,soundPool.load(this,R.raw.c6, 1));
+        soundMap.put(19,soundPool.load(this,R.raw.c7, 1));
+        soundMap.put(20,soundPool.load(this,R.raw.d1, 1));
+        soundMap.put(21,soundPool.load(this,R.raw.a2_, 1));
+        soundMap.put(22,soundPool.load(this,R.raw.a4_, 1));
+        soundMap.put(23,soundPool.load(this,R.raw.a5_, 1));
+        soundMap.put(24,soundPool.load(this,R.raw.a6_, 1));
+        soundMap.put(25,soundPool.load(this,R.raw.b1_, 1));
+        soundMap.put(26,soundPool.load(this,R.raw.b2_, 1));
+        soundMap.put(27,soundPool.load(this,R.raw.b4_, 1));
+        soundMap.put(28,soundPool.load(this,R.raw.b5_, 1));
+        soundMap.put(29,soundPool.load(this,R.raw.b6_, 1));
+        soundMap.put(30,soundPool.load(this,R.raw.c1_, 1));
+        soundMap.put(31,soundPool.load(this,R.raw.c2_, 1));
+        soundMap.put(32,soundPool.load(this,R.raw.c4_, 1));
+        soundMap.put(33,soundPool.load(this,R.raw.c5_, 1));
+        soundMap.put(34,soundPool.load(this,R.raw.c6_, 1));
+
     }
 
     private View.OnClickListener arcOnClickListener = new View.OnClickListener() {
@@ -88,6 +151,8 @@ public class MainActivity extends AppCompatActivity {
     private View.OnClickListener equalOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
+            Log.i("FORMULA", "onClick: "+ formula);
+
             if ((formula.length() > 1)) {
                 try {
                     for (int i = 0; i < leftNumber; i++){
@@ -172,7 +237,7 @@ public class MainActivity extends AppCompatActivity {
                     expression.append("π");
                     break;
                 case R.id.btn_point:
-                    if (judge_point()) {
+                    if (formula.length() ==  0 || ! formula.substring(formula.length()-1).equals(".")) {
                         formula.append(".");
                         expression.append(".");
                     }
@@ -209,8 +274,8 @@ public class MainActivity extends AppCompatActivity {
                     formula.delete(formula.length() - 5, formula.length());
                     expression.delete(expression.length() - 1, expression.length());
                 } else if (formula.length() > 3 && (formula.substring(formula.length() - 4).equals("sin(") ||
-                        formula.substring(formula.length() - 4).equals("cos(") || formula.substring(formula.length() - 4).equals("tan(")) ||
-                        formula.substring(formula.length() - 4).equals("cot(")) {
+                        formula.substring(formula.length() - 4).equals("cos(") || formula.substring(formula.length() - 4).equals("tan(") ||
+                        formula.substring(formula.length() - 4).equals("cot("))) {
                     //最后一位是sin( cos( tan(
                     formula.delete(formula.length() - 4, formula.length());
                     expression.delete(expression.length() - 4, expression.length());
@@ -226,13 +291,14 @@ public class MainActivity extends AppCompatActivity {
                     expression.delete(expression.length() - 2, expression.length());
                     leftNumber --;
                 } else if (formula.length() > 6 && (formula.substring(formula.length() - 7).equals("arcsin(") || formula.substring(formula.length() - 7).equals("arccos(") ||
-                    formula.substring(formula.length() - 7).equals("arctan(") || formula.substring(formula.length() - 7).equals("arccot"))){
+                    formula.substring(formula.length() - 7).equals("arctan(") || formula.substring(formula.length() - 7).equals("arccot("))){
                     formula.delete(formula.length() - 7, formula.length());
                     expression.delete(expression.length() - 7, expression.length());
                     leftNumber --;
-                }
-                else if (formula.substring(formula.length()-1).equals(")")){
+                } else if (formula.substring(formula.length()-1).equals(")")){
                     leftNumber --;
+                } else if (formula.substring(formula.length()-1).equals("(")){
+                    leftNumber ++;
                 } else {
                     formula.delete(formula.length() - 1,formula.length());
                     expression.delete(expression.length() - 1,expression.length());
@@ -308,6 +374,7 @@ public class MainActivity extends AppCompatActivity {
             isLastEqual = false;
             e_input.setTextSize(TypedValue.COMPLEX_UNIT_SP, 48);
             e_output.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
+            dynamicCalculate();
         }
     };
     private View.OnClickListener advancedOperationOnClickListener = new View.OnClickListener() {
@@ -375,6 +442,89 @@ public class MainActivity extends AppCompatActivity {
             e_output.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
         }
     };
+    private View.OnClickListener varyOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            isPiano = !isPiano;
+            if (isPiano){
+                linear_cal.setVisibility(View.INVISIBLE);
+                linear_piano.setVisibility(View.VISIBLE);
+            } else {
+                linear_piano.setVisibility(View.INVISIBLE);
+                linear_cal.setVisibility(View.VISIBLE);
+            }
+        }
+    };
+    private View.OnClickListener pianoOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            switch (view.getId()){
+                case R.id.re_minus:
+                    soundPool.play(soundMap.get(0),1,1,1,0,1);
+                    break;
+                case R.id.mi_minus:
+                    soundPool.play(soundMap.get(1),1,1,1,0,1);
+                    break;
+                case R.id.fa_minus:
+                    soundPool.play(soundMap.get(2),1,1,1,0,1);
+                    break;
+                case R.id.so_minus:
+                    soundPool.play(soundMap.get(3),1,1,1,0,1);
+                    break;
+                case R.id.la_minus:
+                    soundPool.play(soundMap.get(4),1,1,1,0,1);
+                    break;
+                case R.id.si_minus:
+                    soundPool.play(soundMap.get(5),1,1,1,0,1);
+                    break;
+                case R.id.doo:
+                    soundPool.play(soundMap.get(6),1,1,1,0,1);
+                    break;
+                case R.id.re:
+                    soundPool.play(soundMap.get(7),1,1,1,0,1);
+                    break;
+                case R.id.mi:
+                    soundPool.play(soundMap.get(8),1,1,1,0,1);
+                    break;
+                case R.id.fa:
+                    soundPool.play(soundMap.get(9),1,1,1,0,1);
+                    break;
+                case R.id.so:
+                    soundPool.play(soundMap.get(10),1,1,1,0,1);
+                    break;
+                case R.id.la:
+                    soundPool.play(soundMap.get(11),1,1,1,0,1);
+                    break;
+                case R.id.si:
+                    soundPool.play(soundMap.get(12),1,1,1,0,1);
+                    break;
+                case R.id.do_plus:
+                    soundPool.play(soundMap.get(13),1,1,1,0,1);
+                    break;
+                case R.id.re_plus:
+                    soundPool.play(soundMap.get(14),1,1,1,0,1);
+                    break;
+                case R.id.mi_plus:
+                    soundPool.play(soundMap.get(15),1,1,1,0,1);
+                    break;
+                case R.id.fa_plus:
+                    soundPool.play(soundMap.get(16),1,1,1,0,1);
+                    break;
+                case R.id.so_plus:
+                    soundPool.play(soundMap.get(17),1,1,1,0,1);
+                    break;
+                case R.id.la_plus:
+                    soundPool.play(soundMap.get(18),1,1,1,0,1);
+                    break;
+                case R.id.si_plus:
+                    soundPool.play(soundMap.get(19),1,1,1,0,1);
+                    break;
+                case R.id.do_plus_plus:
+                    soundPool.play(soundMap.get(20),1,1,1,0,1);
+                    break;
+            }
+        }
+    };
 
     private void initView() {
         btn_0 =  findViewById(R.id.btn_0);
@@ -411,8 +561,38 @@ public class MainActivity extends AppCompatActivity {
         btn_pi = findViewById(R.id.btn_pi);
         btn_sqrt = findViewById(R.id.btn_sqrt);
         btn_arc = findViewById(R.id.btn_arc);
+        btn_cal = findViewById(R.id.btn_cal);
+        btn_piano = findViewById(R.id.btn_piano);
         e_input = (TextView) findViewById(R.id.input);
         e_output = findViewById(R.id.output);
+
+        linear_cal = findViewById(R.id.linear_cal);
+        linear_piano = findViewById(R.id.linear_piano);
+
+        btn_do=findViewById(R.id.doo);
+        btn_re=findViewById(R.id.re);
+        btn_mi=findViewById(R.id.mi);
+        btn_fa=findViewById(R.id.fa);
+        btn_so=findViewById(R.id.so);
+        btn_la=findViewById(R.id.la);
+        btn_si=findViewById(R.id.si);
+
+        btn_re_minus=findViewById(R.id.re_minus);
+        btn_mi_minus=findViewById(R.id.mi_minus);
+        btn_fa_minus=findViewById(R.id.fa_minus);
+        btn_so_minus=findViewById(R.id.so_minus);
+        btn_la_minus=findViewById(R.id.la_minus);
+        btn_si_minus=findViewById(R.id.si_minus);
+
+        btn_do_plus=findViewById(R.id.do_plus);
+        btn_re_plus=findViewById(R.id.re_plus);
+        btn_mi_plus=findViewById(R.id.mi_plus);
+        btn_fa_plus=findViewById(R.id.fa_plus);
+        btn_so_plus=findViewById(R.id.so_plus);
+        btn_la_plus=findViewById(R.id.la_plus);
+        btn_si_plus=findViewById(R.id.si_plus);
+
+        btn_do_plus_plus=findViewById(R.id.do_plus_plus);
 
         btn_0.setOnClickListener(numberOnClickListener);
         btn_1.setOnClickListener(numberOnClickListener);
@@ -452,6 +632,34 @@ public class MainActivity extends AppCompatActivity {
         btn_sqrt.setOnClickListener(advancedOperationOnClickListener);
 
         btn_arc.setOnClickListener(arcOnClickListener);
+        btn_cal.setOnClickListener(varyOnClickListener);
+        btn_piano.setOnClickListener(varyOnClickListener);
+
+        btn_re_minus.setOnClickListener(pianoOnClickListener);
+        btn_re_minus.setOnClickListener(pianoOnClickListener);
+        btn_mi_minus.setOnClickListener(pianoOnClickListener);
+        btn_fa_minus.setOnClickListener(pianoOnClickListener);
+        btn_so_minus.setOnClickListener(pianoOnClickListener);
+        btn_la_minus.setOnClickListener(pianoOnClickListener);
+        btn_si_minus.setOnClickListener(pianoOnClickListener);
+
+        btn_do.setOnClickListener(pianoOnClickListener);
+        btn_re.setOnClickListener(pianoOnClickListener);
+        btn_mi.setOnClickListener(pianoOnClickListener);
+        btn_fa.setOnClickListener(pianoOnClickListener);
+        btn_so.setOnClickListener(pianoOnClickListener);
+        btn_la.setOnClickListener(pianoOnClickListener);
+        btn_si.setOnClickListener(pianoOnClickListener);
+
+        btn_do_plus.setOnClickListener(pianoOnClickListener);
+        btn_re_plus.setOnClickListener(pianoOnClickListener);
+        btn_mi_plus.setOnClickListener(pianoOnClickListener);
+        btn_fa_plus.setOnClickListener(pianoOnClickListener);
+        btn_so_plus.setOnClickListener(pianoOnClickListener);
+        btn_la_plus.setOnClickListener(pianoOnClickListener);
+        btn_si_plus.setOnClickListener(pianoOnClickListener);
+
+        btn_do_plus_plus.setOnClickListener(pianoOnClickListener);
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -460,48 +668,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         initView();
+        loadMusci();
+
+
     }
 
-
-
-    //计算式最后一个符号不能是.
-    private boolean judge_point() {
-        String a = "+-*/%.";
-        int[] b = new int[a.length()];
-        int max;
-        for (int i = 0; i < a.length(); i++) {
-            b[i] = -1;
-            String c = "" + a.charAt(i);
-            b[i] = formula.lastIndexOf(c);
-        }
-        Arrays.sort(b);
-        //最后一个是不是点
-        if (b[a.length() - 1] == -1) {
-            max = 0;
-        } else {
-            max = b[a.length() - 1];
-        }
-
-        if (formula.indexOf(".", max) == -1) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-    private int judge_brackets(){
-        int a=0,b=0;
-        for(int i = 0 ; i < formula.length() ;i++){
-            if(formula.charAt(i)=='(' ) {
-                a++;
-            }
-            if(formula.charAt(i)==')' ) {
-                b++;
-            }
-        }
-        if(a == b)
-            return 0;
-        if(a > b)
-            return 1;
-        return 2;
-    }
 }
