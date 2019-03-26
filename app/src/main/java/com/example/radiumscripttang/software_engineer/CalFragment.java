@@ -238,8 +238,12 @@ public class CalFragment extends Fragment {
                     expression.delete(expression.length() - 7, expression.length());
                     leftNumber --;
                 } else if (formula.substring(formula.length()-1).equals(")")){
+                    formula.delete(formula.length() - 1, formula.length());
+                    expression.delete(expression.length() - 1, expression.length());
                     leftNumber --;
                 } else if (formula.substring(formula.length()-1).equals("(")){
+                    formula.delete(formula.length() - 1, formula.length());
+                    expression.delete(expression.length() - 1, expression.length());
                     leftNumber ++;
                 } else {
                     formula.delete(formula.length() - 1,formula.length());

@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".PianokFragment">
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/linear_cal_0"
         android:layout_width = "match_parent"
         android:layout_height = "0dp"
@@ -14,21 +14,26 @@
         android:gravity="bottom"
         android:background="#FFFFF0"
         >
-
         <TextView
             android:id="@+id/input"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:textSize="48sp"
-            android:gravity="bottom|right"/>
-        <TextView
-            android:id="@+id/output"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:textSize="24sp"
-            android:gravity="bottom|right"/>
-    </LinearLayout>
+            android:scrollbars="vertical"
+            android:gravity="top|left"
+            />
+        <ListView
+            android:id="@+id/file_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible"
+            >
+
+        </ListView>
+
+
+    </RelativeLayout>
     <LinearLayout
         android:id="@+id/linear_piano"
         android:layout_width="match_parent"
@@ -95,10 +100,11 @@
                 android:src="@mipmap/note_2_plus"
                 android:layout_weight="1"/>
             <ImageButton
+                android:id="@+id/btn_backspace"
                 android:layout_width="wrap_content"
                 android:layout_height="60sp"
                 android:background="#ffffff"
-                android:src="@mipmap/note_1_plus_plus"
+                android:src="@mipmap/backspace"
                 android:layout_weight="1"/>
         </LinearLayout>
         <LinearLayout
@@ -131,7 +137,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="60sp"
                 android:background="#ffffff"
-                android:src="@mipmap/note_1_plus_plus"
+                android:src="@mipmap/save_song"
                 android:layout_weight="1"/>
         </LinearLayout>
         <LinearLayout
@@ -161,10 +167,11 @@
                 android:src="@mipmap/note_4_plus"
                 android:layout_weight="1"/>
             <ImageButton
+                android:id="@+id/load_song"
                 android:layout_width="wrap_content"
                 android:layout_height="60sp"
                 android:background="#ffffff"
-                android:src="@mipmap/note_1_plus_plus"
+                android:src="@mipmap/load_song"
                 android:layout_weight="1"/>
         </LinearLayout>
         <LinearLayout
@@ -194,10 +201,11 @@
                 android:src="@mipmap/note_5_plus"
                 android:layout_weight="1"/>
             <ImageButton
+                android:id="@+id/save_song"
                 android:layout_width="wrap_content"
                 android:layout_height="60sp"
                 android:background="#ffffff"
-                android:src="@mipmap/note_1_plus_plus"
+                android:src="@mipmap/save_song"
                 android:layout_weight="1"/>
         </LinearLayout>
         <LinearLayout
@@ -227,10 +235,11 @@
                 android:src="@mipmap/note_6_plus"
                 android:layout_weight="1"/>
             <ImageButton
+                android:id="@+id/btn_diy"
                 android:layout_width="wrap_content"
                 android:layout_height="60sp"
                 android:background="#ffffff"
-                android:src="@mipmap/note_1_plus_plus"
+                android:src="@mipmap/diy"
                 android:layout_weight="1"/>
         </LinearLayout>
         <LinearLayout
@@ -260,10 +269,11 @@
                 android:src="@mipmap/note_7_plus"
                 android:layout_weight="1"/>
             <ImageButton
+                android:id="@+id/btn_play"
                 android:layout_width="wrap_content"
                 android:layout_height="60sp"
                 android:background="#ffffff"
-                android:src="@mipmap/note_1_plus_plus"
+                android:src="@mipmap/play"
                 android:layout_weight="1"/>
         </LinearLayout>
 

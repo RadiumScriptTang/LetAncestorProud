@@ -4,10 +4,25 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.media.AudioAttributes;
 import android.media.SoundPool;
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.text.LoginFilter;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ImageSpan;
+import android.widget.ImageButton;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 class PianoUnit{
     int noteId;
@@ -16,21 +31,59 @@ class PianoUnit{
         this.noteId = id;
         this.delay = delay;
     }
+
+    public int getNoteId() {
+        return noteId;
+    }
+
+    public int getDelay() {
+        return delay;
+    }
 }
 
-class PianoSong{
-    ArrayList<PianoUnit> song = new ArrayList<>();
-    StringBuilder songString = new StringBuilder();
-    public PianoSong(){
+class PianoSong {
+    ArrayList<PianoUnit> song = new ArrayList<PianoUnit>();
+    int noteSpans [] = {R.mipmap.n0_1000,R.mipmap.n1_1000, R.mipmap.n2_1000, R.mipmap.n3_1000, R.mipmap.n4_1000, R.mipmap.n5_1000,
+            R.mipmap.n6_1000, R.mipmap.n7_1000, R.mipmap.n8_1000, R.mipmap.n9_1000, R.mipmap.n10_1000, R.mipmap.n11_1000
+            , R.mipmap.n12_1000, R.mipmap.n13_1000, R.mipmap.n14_1000, R.mipmap.n15_1000, R.mipmap.n16_1000, R.mipmap.n17_1000, R.mipmap.n18_1000, R.mipmap.n19_1000, R.mipmap.n20_1000};
+
+    String spanString[] = {"n0_1000,", "n1_1000,", "n2_1000,", "n3_1000,", "n4_1000,", "n5_1000,", "n6_1000,", "n7_1000,", "n8_1000,", "n9_1000,", "n10_1000,",
+            "n11_1000,", "n12_1000,", "n13_1000,", "n14_1000,", "n15_1000,", "n16_1000,", "n17_1000,", "n18_1000,", "n19_1000,", "n20_1000 "};
+
+    Context context;
+
+    Thread playThread;
+
+    public PianoSong(Context context){
+        this.context = context;
 
     }
-    public int save(){
-        return 0;
+    public void empty(){
+        this.song.clear();
+    }
+    public void loadSong(String string){
+        ArrayList<PianoUnit> pianoSong = new ArrayList<>();
+        int j = 0;
+
+        while (j < string.length()){
+            if (string.charAt(j) == 'n'){
+                int i = j + 1;
+                StringBuilder number = new StringBuilder();
+                StringBuilder delay = new StringBuilder();
+                while (string.charAt(i) != '_'){
+                    number.append(string.charAt(i++));
+                }
+                i += 1;
+                while (string.charAt(i) != ','){
+                    delay.append(string.charAt(i++));
+                }
+                pianoSong.add(new PianoUnit(Integer.parseInt(number.toString()),Integer.parseInt(delay.toString())));
+            }
+            j++;
+        }
+        this.song = pianoSong;
     }
 
-    public int load(){
-        return 0;
-    }
 
     public void append(int id, int delay){
         PianoUnit unit = new PianoUnit(id ,delay);
@@ -38,8 +91,55 @@ class PianoSong{
     }
 
     public void backspace(){
+        if (song.size() == 0){
+            return;
+        }
         song.remove(song.size() - 1);
     }
+    public StringBuilder getString(){
+        StringBuilder stringBuilder = new StringBuilder();
+        for( PianoUnit u : song){
+            stringBuilder.append("n"+u.getNoteId()+"_"+u.getDelay()+",");
+        }
+        return stringBuilder;
+    }
+    public SpannableString getSpanString(StringBuilder string){
+        SpannableString spannableString = new SpannableString(string);
+        for(int i = 0; i < 21; i++){
+            Pattern pattern = Pattern.compile(spanString[i]);
+            Matcher matcher = pattern.matcher(string);
+            while (matcher.find()){
+                spannableString.setSpan(new ImageSpan(context,noteSpans[i]),matcher.start(),matcher.end(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+        }
+        return  spannableString;
+    }
+    public int length(){
+        return song.size();
+    }
+    public void play(PianoPlayer player, ImageButton start){
+
+        playThread = new Thread(){
+            @Override
+            public void run() {
+//                start.setImageResource(R.mipmap.pause);
+                for( PianoUnit u : song){
+                    player.play(u.getNoteId());
+                    try {
+                        Thread.sleep(u.getDelay());
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+//                start.setImageResource(R.mipmap.play);
+            }
+        };
+        playThread.start();
+    }
+    public void stop(){
+        playThread.interrupt();
+    }
+    
 }
 
 public class PianoPlayer {
@@ -93,6 +193,6 @@ public class PianoPlayer {
         loadMusci(context);
     }
     public void play(int id){
-        soundPool.play(id,1,1,1,0,1);
+        soundPool.play(id + 1,1,1,1,0,1);
     }
 }
