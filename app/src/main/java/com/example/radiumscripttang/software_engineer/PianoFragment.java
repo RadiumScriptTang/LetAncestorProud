@@ -37,7 +37,7 @@ public class PianoFragment extends Fragment {
             btn_do,btn_re,btn_mi,btn_fa,btn_so,btn_la,btn_si,btn_do_plus,btn_re_plus,btn_mi_plus,btn_fa_plus,btn_so_plus,btn_la_plus,btn_si_plus,
             btn_do_plus_plus;
     PianoPlayer pianoPlayer;
-    ImageButton btn_del, btn_play, btn_diy, btn_save, btn_load;
+    ImageButton btn_del, btn_play, btn_diy, btn_save, btn_load, btn_delay;
     TextView e_input;
     PianoSong pianoSong;
     ListView file_list;
@@ -223,6 +223,7 @@ public class PianoFragment extends Fragment {
 
                                 }
                             }).setNegativeButton("取消",null).show();
+                    map = sharedPreferences.getAll();
                     break;
                 case R.id.load_song:
                     isLoading = true;
@@ -289,6 +290,7 @@ public class PianoFragment extends Fragment {
         btn_diy = view.findViewById(R.id.btn_diy);
         btn_load = view.findViewById(R.id.load_song);
         btn_save = view.findViewById(R.id.save_song);
+        btn_delay = view.findViewById(R.id.btn_delay);
 
         e_input = view.findViewById(R.id.input);
         file_list = view.findViewById(R.id.file_list);
@@ -361,6 +363,24 @@ public class PianoFragment extends Fragment {
         btn_save.setOnClickListener(ioOnClickListener);
 
         file_list.setOnItemClickListener(onItemClickListener);
+        btn_delay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (pianoSong.length() == 0){
+                    return;
+                }
+                PianoUnit last = pianoSong.getLast();
+                pianoSong.backspace();
+                if (last.getDelay() == 1000){
+                    pianoSong.append(last.getNoteId(),500);
+                } else if (last.getDelay() == 500){
+                    pianoSong.append(last.getNoteId(),250);
+                } else {
+                    pianoSong.append(last.getNoteId(),1000);
+                }
+                e_input.setText(pianoSong.getSpanString(pianoSong.getString()));
+            }
+        });
 
 
     }

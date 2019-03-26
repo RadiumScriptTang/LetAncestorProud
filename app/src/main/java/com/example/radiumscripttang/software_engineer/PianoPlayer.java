@@ -45,10 +45,22 @@ class PianoSong {
     ArrayList<PianoUnit> song = new ArrayList<PianoUnit>();
     int noteSpans [] = {R.mipmap.n0_1000,R.mipmap.n1_1000, R.mipmap.n2_1000, R.mipmap.n3_1000, R.mipmap.n4_1000, R.mipmap.n5_1000,
             R.mipmap.n6_1000, R.mipmap.n7_1000, R.mipmap.n8_1000, R.mipmap.n9_1000, R.mipmap.n10_1000, R.mipmap.n11_1000
-            , R.mipmap.n12_1000, R.mipmap.n13_1000, R.mipmap.n14_1000, R.mipmap.n15_1000, R.mipmap.n16_1000, R.mipmap.n17_1000, R.mipmap.n18_1000, R.mipmap.n19_1000, R.mipmap.n20_1000};
+            , R.mipmap.n12_1000, R.mipmap.n13_1000, R.mipmap.n14_1000, R.mipmap.n15_1000, R.mipmap.n16_1000, R.mipmap.n17_1000,
+            R.mipmap.n18_1000, R.mipmap.n19_1000, R.mipmap.n20_1000,R.mipmap.n0_500, R.mipmap.n1_500, R.mipmap.n2_500, R.mipmap.n3_500,
+            R.mipmap.n4_500, R.mipmap.n5_500, R.mipmap.n6_500, R.mipmap.n7_500, R.mipmap.n8_500, R.mipmap.n9_500, R.mipmap.n10_500, R.mipmap.n11_500,
+            R.mipmap.n12_500, R.mipmap.n13_500, R.mipmap.n14_500, R.mipmap.n15_500, R.mipmap.n16_500, R.mipmap.n17_500, R.mipmap.n18_500, R.mipmap.n19_500, R.mipmap.n20_500,
+            R.mipmap.n0_250, R.mipmap.n1_250, R.mipmap.n2_250, R.mipmap.n3_250, R.mipmap.n4_250, R.mipmap.n5_250, R.mipmap.n6_250,
+            R.mipmap.n7_250, R.mipmap.n8_250, R.mipmap.n9_250, R.mipmap.n10_250, R.mipmap.n11_250, R.mipmap
+            .n12_250, R.mipmap.n13_250, R.mipmap.n14_250, R.mipmap.n15_250, R.mipmap.n16_250, R.mipmap.n17_250, R.mipmap
+            .n18_250, R.mipmap.n19_250, R.mipmap.n20_250};
 
     String spanString[] = {"n0_1000,", "n1_1000,", "n2_1000,", "n3_1000,", "n4_1000,", "n5_1000,", "n6_1000,", "n7_1000,", "n8_1000,", "n9_1000,", "n10_1000,",
-            "n11_1000,", "n12_1000,", "n13_1000,", "n14_1000,", "n15_1000,", "n16_1000,", "n17_1000,", "n18_1000,", "n19_1000,", "n20_1000 "};
+            "n11_1000,", "n12_1000,", "n13_1000,", "n14_1000,", "n15_1000,", "n16_1000,", "n17_1000,", "n18_1000,", "n19_1000,", "n20_1000,","n0_500,", "n1_500,",
+            "n2_500,", "n3_500,", "n4_500,", "n5_500,", "n6_500,", "n7_500,", "n8_500,", "n9_500,", "n10_500,", "n11_500,", "n12_500,", "n13_500,",
+            "n14_500,", "n15_500,", "n16_500,", "n17_500,", "n18_500,", "n19_500,", "n20_500,","n0_250,", "n1_250,", "n2_250,", "n3_250,", "n4_250,",
+            "n5_250,", "n6_250,", "n7_250,", "n8_250,", "n9_250,", "n10_250,",
+            "n11_250,", "n12_250,", "n13_250,", "n14_250,", "n15_250,", "n16_250,", "n17_250,", "n18_250,", "n19_250,", "n20_250,"
+    };
 
     Context context;
 
@@ -105,7 +117,7 @@ class PianoSong {
     }
     public SpannableString getSpanString(StringBuilder string){
         SpannableString spannableString = new SpannableString(string);
-        for(int i = 0; i < 21; i++){
+        for(int i = 0; i < noteSpans.length; i++){
             Pattern pattern = Pattern.compile(spanString[i]);
             Matcher matcher = pattern.matcher(string);
             while (matcher.find()){
@@ -138,6 +150,12 @@ class PianoSong {
     }
     public void stop(){
         playThread.interrupt();
+    }
+    public PianoUnit getLast(){
+        if (length() == 0){
+            return null;
+        }
+        return song.get(length() - 1);
     }
     
 }
