@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr format="reference" name="pickerUI"/>
+    <color name="background_panel_pickerui">#fffafafa</color>
+    <color name="grey1">#00CCCCCC</color>
+    <color name="grey2">#10CCCCCC</color>
+    <color name="grey3">#20CCCCCC</color>
+    <color name="grey4">#30CCCCCC</color>
+    <color name="grey5">#50747474</color>
+    <color name="lines_panel_pickerui">#aaaaaa</color>
+    <color name="text_center_pickerui">#ff000000</color>
+    <color name="text_no_center_pickerui">#aaa</color>
+    <dimen name="height_hidden_panel_pickerui">200dp</dimen>
+    <dimen name="height_lines_center_pickerui">1dp</dimen>
+    <dimen name="height_normal_item_pickerui">40dp</dimen>
+    <dimen name="margin_top_line_bottom_pickerui">120dp</dimen>
+    <dimen name="margin_top_line_top_pickerui">80dp</dimen>
+    <dimen name="textsize_center_pickerui_item">25dp</dimen>
+    <dimen name="textsize_far_center_pickerui_item">15dp</dimen>
+    <dimen name="textsize_near_center_pickerui_item">17dp</dimen>
+    <dimen name="textsize_small_pickerui_item">11dp</dimen>
+    <drawable name="list_item_selected">#aaaaaa</drawable>
+    <integer name="animation_time">400</integer>
+    <integer name="blur_downscale_max">6</integer>
+    <integer name="blur_downscale_min">1</integer>
+    <integer name="blur_radius_max">25</integer>
+    <integer name="blur_radius_min">1</integer>
+    <style name="PickerUI.Center.Item" parent="@android:style/Widget.TextView">
+        <item name="android:textColor">@color/text_center_pickerui</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/textsize_center_pickerui_item</item>
+    </style>
+    <style name="PickerUI.Far.Center.Item" parent="PickerUI.No.Center.Item">
+        <item name="android:textSize">@dimen/textsize_far_center_pickerui_item</item>
+        <item name="android:alpha">0.2</item>
+    </style>
+    <style name="PickerUI.ListView" parent="@android:style/Widget.ListView">
+        <item name="android:divider">@android:color/transparent</item>
+        <item name="android:dividerHeight">1dp</item>
+        <item name="android:overScrollMode">always</item>
+        <item name="android:scrollbars">none</item>
+        <item name="android:cacheColorHint">#000000</item>
+    </style>
+    <style name="PickerUI.Near.Center.Item" parent="PickerUI.No.Center.Item">
+        <item name="android:textSize">@dimen/textsize_near_center_pickerui_item</item>
+    </style>
+    <style name="PickerUI.No.Center.Item" parent="@android:style/Widget.TextView">
+        <item name="android:textColor">@color/text_no_center_pickerui</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+    <style name="PickerUI.Small.Item" parent="PickerUI.No.Center.Item">
+        <item name="android:textSize">@dimen/textsize_small_pickerui_item</item>
+    </style>
+    <style name="line_center_default">
+        <item name="android:layout_height">@dimen/height_lines_center_pickerui</item>
+        <item name="android:background">@color/lines_panel_pickerui</item>
+        <item name="android:alpha">0.7</item>
+    </style>
+    <declare-styleable name="PickerUI">
+        <!-- to use in PickerUI in the panel -->
+        <attr format="color" name="backgroundColor"/>
+        <attr format="color" name="linesCenterColor"/>
+
+        <!-- to use in PickerUIListView -->
+        <attr format="boolean" name="autoDismiss"/>
+        <attr format="boolean" name="itemsClickables"/>
+        <attr format="reference" name="entries"/>
+
+        <!-- to use in PickerUI in the PickerUIListView by PickerUIAdapter -->
+        <attr format="color" name="textCenterColor"/>
+        <attr format="color" name="textNoCenterColor"/>
+
+        <!-- Blur Attributes -->
+        <attr format="boolean" name="blur"/>
+        <attr format="float" name="blur_downScaleFactor"/>
+        <attr format="color" name="blur_FilterColor"/>
+        <attr format="integer" name="blur_radius"/>
+        <attr format="boolean" name="blur_use_renderscript"/>
+
+    </declare-styleable>
+</resources>
