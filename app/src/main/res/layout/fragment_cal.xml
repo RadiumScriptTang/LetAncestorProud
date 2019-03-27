@@ -41,10 +41,10 @@
             android:orientation="horizontal"
             android:weightSum="5"
             >
-            <Button
+            <ImageButton
                 android:layout_width="0dp"
                 android:layout_height="60sp"
-                android:text="@string/vary"
+                android:src="@mipmap/piano"
                 android:textSize="24sp"
                 android:id="@+id/btn_piano"
                 android:layout_weight="1"
@@ -154,10 +154,10 @@
                 android:layout_weight="1"
                 android:background="#ffffff"
                 android:textColor="#000000"/>
-            <Button
+            <ImageButton
                 android:layout_width="0dp"
                 android:layout_height="60sp"
-                android:text="@string/del"
+                android:src="@mipmap/backspace"
                 android:textSize="24sp"
                 android:id="@+id/btn_del"
                 android:layout_weight="1"

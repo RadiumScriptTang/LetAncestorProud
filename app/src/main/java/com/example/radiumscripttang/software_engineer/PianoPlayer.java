@@ -4,6 +4,8 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.media.AudioAttributes;
 import android.media.SoundPool;
+import android.os.Handler;
+import android.os.Message;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.LoginFilter;
@@ -130,23 +132,39 @@ class PianoSong {
         return song.size();
     }
     public void play(PianoPlayer player, ImageButton start){
+        start.setImageResource(R.mipmap.stop);
 
+        Handler handler = new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                if (msg.what == 0){
+                    start.setImageResource(R.mipmap.play);
+                }
+            }
+        };
         playThread = new Thread(){
             @Override
             public void run() {
-//                start.setImageResource(R.mipmap.pause);
                 for( PianoUnit u : song){
                     player.play(u.getNoteId());
                     try {
                         Thread.sleep(u.getDelay());
                     } catch (InterruptedException e) {
                         e.printStackTrace();
+                        Message msg = new Message();
+                        msg.what = 0;
+                        handler.sendMessage(msg);
+                        break;
                     }
                 }
-//                start.setImageResource(R.mipmap.play);
+                Message msg = new Message();
+                msg.what = 0;
+                handler.sendMessage(msg);
             }
         };
         playThread.start();
+
+
     }
     public void stop(){
         playThread.interrupt();

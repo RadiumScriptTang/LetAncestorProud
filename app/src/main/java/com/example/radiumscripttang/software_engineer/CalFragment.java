@@ -14,9 +14,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.DataOutput;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 
 import parsii.eval.Parser;
 
@@ -33,7 +37,6 @@ public class CalFragment extends Fragment {
     Button btn_9;
     Button btn_point; //小数点
     Button btn_clear; //清除
-    Button btn_del;   //删除
     Button btn_plus; //+
     Button btn_minus; //-
     Button btn_multiply; //*
@@ -44,8 +47,8 @@ public class CalFragment extends Fragment {
     Button btn_right; // )
     Button btn_sin, btn_cos, btn_tan, btn_cot, btn_lg, btn_ln, btn_pow, btn_square, btn_cube, btn_pi, btn_euler, btn_sqrt;
     Button btn_arc;
-    Button btn_piano;
     TextView e_input, e_output;
+    ImageButton btn_del,btn_piano;
 
     private StringBuilder formula = new StringBuilder();
     private StringBuilder expression = new StringBuilder();
@@ -335,7 +338,7 @@ public class CalFragment extends Fragment {
                 case R.id.btn_sin:
                     if (isArc){
                         formula.append("arcsin(");
-                        expression.append("arccos(");
+                        expression.append("arcsin(");
                     } else {
                         formula.append("sin(");
                         expression.append("sin(");
@@ -470,6 +473,7 @@ public class CalFragment extends Fragment {
         btn_piano.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Toast.makeText(getActivity(),"进入钢琴功能，本功能将播放声音，请注意周围环境",Toast.LENGTH_LONG).show();
                 fragmentManager = getActivity().getSupportFragmentManager();
                 fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.main_fragment,new PianoFragment());

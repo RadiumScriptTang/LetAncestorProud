@@ -44,6 +44,7 @@ public class PianoFragment extends Fragment {
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
     Map<String,?> map;
+    String[] savedString;
 
 
 
@@ -56,6 +57,9 @@ public class PianoFragment extends Fragment {
     private View.OnClickListener pianoOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
+            if (pianoSong.playThread != null && pianoSong.playThread.isAlive()){
+                pianoSong.playThread.interrupt();
+            }
             switch (view.getId()){
                 case R.id.re_minus:
                     pianoPlayer.play(0);
@@ -226,23 +230,28 @@ public class PianoFragment extends Fragment {
                     map = sharedPreferences.getAll();
                     break;
                 case R.id.load_song:
-                    isLoading = true;
-                    isDiy = false;
-                    e_input.setVisibility(View.INVISIBLE);
-                    file_list.setVisibility(View.VISIBLE);
-                    String[] savedString = map.keySet().toArray(new String[map.keySet().size()]);
-                    ArrayAdapter<String> adpter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1,savedString);
-                    file_list.setAdapter(adpter);
+                    isLoading = !isLoading;
+                    if (isLoading){
+                        e_input.setVisibility(View.VISIBLE);
+                        file_list.setVisibility(View.INVISIBLE);
+                    } else {
+                        map = sharedPreferences.getAll();
+                        e_input.setVisibility(View.INVISIBLE);
+                        file_list.setVisibility(View.VISIBLE);
+                        savedString = map.keySet().toArray(new String[map.keySet().size()]);
+                        ArrayAdapter<String> adpter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1,savedString);
+                        file_list.setAdapter(adpter);
+                    }
             }
         }
     };
     private AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-            String loadingFile = ((TextView) getActivity().findViewById(view.getId())).getText().toString();
+            String loadingFile = savedString[i];
             String songString = sharedPreferences.getString(loadingFile,"");
             pianoSong.empty();
-            Log.i("SONGSTRING", "onItemClick: " + songString);
+            Log.i("SONGSTRING", "onItemClick: " +loadingFile+" " + songString);
             pianoSong.loadSong(songString);
             e_input.setVisibility(View.VISIBLE);
             file_list.setVisibility(View.INVISIBLE);
@@ -256,7 +265,6 @@ public class PianoFragment extends Fragment {
         sharedPreferences = getActivity().getSharedPreferences("songs",Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
 
-        map =  sharedPreferences.getAll();
 
 
         btn_do=view.findViewById(R.id.doo);
@@ -334,9 +342,11 @@ public class PianoFragment extends Fragment {
             public void onClick(View view) {
                 isDiy = !isDiy;
                 if (isDiy){
+                    btn_diy.setImageResource(R.mipmap.diy);
                     Toast.makeText(getActivity(),"谱区模式开启",Toast.LENGTH_SHORT).show();
                     pianoSong = new PianoSong(getActivity());
                 } else {
+                    btn_diy.setImageResource(R.mipmap.diy_none);
                     Toast.makeText(getActivity(),"谱区模式关闭",Toast.LENGTH_SHORT).show();
                 }
             }
@@ -345,11 +355,11 @@ public class PianoFragment extends Fragment {
         btn_play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                isPlaying = true;
-                btn_play.setImageResource(R.mipmap.pause);
-                pianoSong.play(pianoPlayer,btn_play);
-                btn_play.setImageResource(R.mipmap.play);
-                isPlaying = false;
+                if (pianoSong.playThread != null && pianoSong.playThread.isAlive()){
+                    pianoSong.playThread.interrupt();
+                } else {
+                    pianoSong.play(pianoPlayer,btn_play);
+                }
             }
         });
         btn_del.setOnClickListener(new View.OnClickListener() {

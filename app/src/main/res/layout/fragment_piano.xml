@@ -241,7 +241,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="60sp"
                 android:background="#ffffff"
-                android:src="@mipmap/diy"
+                android:src="@mipmap/diy_none"
                 android:layout_weight="1"/>
         </LinearLayout>
         <LinearLayout
